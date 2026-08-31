@@ -43,12 +43,7 @@ export const AIChatSidebar = ({ onBoardChange }: { onBoardChange: () => void }) 
 
       const data = await response.json();
       
-      let assistantMessage = "I've processed your request";
-      if (data.action && data.action !== "error") {
-        assistantMessage = `I ${data.action}d ${data.cards?.length || 0} card(s).`;
-      } else if (data.message) {
-        assistantMessage = data.message;
-      }
+      let assistantMessage = data.summary || (data.action && data.action !== "error" ? `I ${data.action}d ${data.cards?.length || 0} card(s).` : data.message || "I've processed your request");
 
       setMessages((prev) => [...prev, { role: "assistant", content: assistantMessage }]);
       onBoardChange();

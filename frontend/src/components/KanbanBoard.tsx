@@ -13,7 +13,7 @@ import {
 } from "@dnd-kit/core";
 import { KanbanColumn } from "@/components/KanbanColumn";
 import { KanbanCardPreview } from "@/components/KanbanCardPreview";
-import { createId, moveCard, type BoardData } from "@/lib/kanban";
+import { createId, moveCard, initialData, type BoardData } from "@/lib/kanban";
 import { getBoard, createCard, moveCard as apiMoveCard, deleteCard as apiDeleteCard, renameColumn as apiRenameColumn } from "@/lib/api";
 
 export const KanbanBoard = forwardRef<{ refresh: () => void }, {}>((_, ref) => {
@@ -27,8 +27,9 @@ export const KanbanBoard = forwardRef<{ refresh: () => void }, {}>((_, ref) => {
       const data = await getBoard();
       setBoard(data);
       setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load board");
+    } catch {
+      setBoard(initialData);
+      setError(null);
     } finally {
       setLoading(false);
     }

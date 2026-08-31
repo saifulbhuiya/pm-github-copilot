@@ -1,14 +1,15 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from dotenv import load_dotenv
 from db import init_db, get_user_board, move_card, create_card, delete_card, rename_column
 from models import BoardData, CreateCardRequest, MoveCardRequest, RenameColumnRequest, AIChatRequest
-from ai import parse_ai_command
-
-load_dotenv()
+from ai import parse_ai_command, execute_ai_command
 
 app = FastAPI(title="Project Management API", version="1.0.0")
 
@@ -95,8 +96,9 @@ async def ai_chat(request: AIChatRequest):
         if not board:
             raise HTTPException(status_code=404, detail="Board not found")
         
-        response = await parse_ai_command(board, request.message)
-        return response
+        command = await parse_ai_command(board, request.message)
+        result = execute_ai_command(board, command)
+        return {**command, **result}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
