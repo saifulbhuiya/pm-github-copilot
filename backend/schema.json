@@ -1,0 +1,149 @@
+{
+  "tables": [
+    {
+      "name": "users",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]
+        },
+        {
+          "name": "username",
+          "type": "TEXT",
+          "constraints": ["UNIQUE", "NOT NULL"]
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "constraints": ["DEFAULT CURRENT_TIMESTAMP"]
+        }
+      ]
+    },
+    {
+      "name": "boards",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "constraints": ["NOT NULL", "FOREIGN KEY REFERENCES users(id)"]
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "constraints": ["NOT NULL", "DEFAULT 'My Board'"]
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "constraints": ["DEFAULT CURRENT_TIMESTAMP"]
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "constraints": ["DEFAULT CURRENT_TIMESTAMP"]
+        }
+      ]
+    },
+    {
+      "name": "columns",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]
+        },
+        {
+          "name": "board_id",
+          "type": "INTEGER",
+          "constraints": ["NOT NULL", "FOREIGN KEY REFERENCES boards(id)"]
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "constraints": ["NOT NULL"]
+        },
+        {
+          "name": "position",
+          "type": "INTEGER",
+          "constraints": ["NOT NULL"]
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "constraints": ["DEFAULT CURRENT_TIMESTAMP"]
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "constraints": ["DEFAULT CURRENT_TIMESTAMP"]
+        }
+      ]
+    },
+    {
+      "name": "cards",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]
+        },
+        {
+          "name": "column_id",
+          "type": "INTEGER",
+          "constraints": ["NOT NULL", "FOREIGN KEY REFERENCES columns(id)"]
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "constraints": ["NOT NULL"]
+        },
+        {
+          "name": "details",
+          "type": "TEXT",
+          "constraints": ["DEFAULT ''"]
+        },
+        {
+          "name": "position",
+          "type": "INTEGER",
+          "constraints": ["NOT NULL"]
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "constraints": ["DEFAULT CURRENT_TIMESTAMP"]
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "constraints": ["DEFAULT CURRENT_TIMESTAMP"]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "table": "boards",
+      "foreignKey": "user_id",
+      "referencesTable": "users",
+      "referencesColumn": "id"
+    },
+    {
+      "table": "columns",
+      "foreignKey": "board_id",
+      "referencesTable": "boards",
+      "referencesColumn": "id"
+    },
+    {
+      "table": "cards",
+      "foreignKey": "column_id",
+      "referencesTable": "columns",
+      "referencesColumn": "id"
+    }
+  ]
+}
