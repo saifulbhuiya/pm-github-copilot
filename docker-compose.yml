@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  pm-app:
+    build: .
+    container_name: pm-kanban
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    volumes:
+      - ./backend:/app/backend
+    restart: unless-stopped

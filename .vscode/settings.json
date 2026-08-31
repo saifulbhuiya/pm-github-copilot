@@ -1,0 +1,19 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^docker --version$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "docker run": true,
+        "/^cd \"C:\\\\office-tasks\\\\AI Workspace\\\\ai-learning-projects\\\\pm-github-copilot\\\\backend\"; python -m pytest test_main\\.py -v$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "docker exec": true,
+        "docker stop": true,
+        "docker rm": true,
+        "docker system": true,
+        "git add": true,
+        "git commit": true
+    }
+}
