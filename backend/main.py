@@ -5,7 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from db import init_db, get_user_board, move_card, create_card, delete_card, rename_column
-from models import BoardData, CreateCardRequest, MoveCardRequest, RenameColumnRequest
+from models import BoardData, CreateCardRequest, MoveCardRequest, RenameColumnRequest, AIChatRequest
+from ai import parse_ai_command
 
 load_dotenv()
 
@@ -82,6 +83,20 @@ def rename_column_endpoint(column_id: int, request: RenameColumnRequest):
     try:
         rename_column(column_id, request.title)
         return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/ai/chat")
+async def ai_chat(request: AIChatRequest):
+    """Process AI chat command and return board modifications"""
+    try:
+        board = get_user_board(1)
+        if not board:
+            raise HTTPException(status_code=404, detail="Board not found")
+        
+        response = await parse_ai_command(board, request.message)
+        return response
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

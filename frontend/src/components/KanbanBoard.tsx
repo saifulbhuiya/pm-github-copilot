@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -16,26 +16,31 @@ import { KanbanCardPreview } from "@/components/KanbanCardPreview";
 import { createId, moveCard, type BoardData } from "@/lib/kanban";
 import { getBoard, createCard, moveCard as apiMoveCard, deleteCard as apiDeleteCard, renameColumn as apiRenameColumn } from "@/lib/api";
 
-export const KanbanBoard = () => {
+export const KanbanBoard = forwardRef<{ refresh: () => void }, {}>((_, ref) => {
   const [board, setBoard] = useState<BoardData | null>(null);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchBoard = async () => {
+    try {
+      const data = await getBoard();
+      setBoard(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load board");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchBoard = async () => {
-      try {
-        const data = await getBoard();
-        setBoard(data);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load board");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchBoard();
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    refresh: fetchBoard,
+  }));
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -247,4 +252,4 @@ export const KanbanBoard = () => {
       </main>
     </div>
   );
-};
+});

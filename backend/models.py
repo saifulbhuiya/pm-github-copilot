@@ -26,3 +26,7 @@ class MoveCardRequest(BaseModel):
 
 class RenameColumnRequest(BaseModel):
     title: str
+
+class AIChatRequest(BaseModel):
+    message: str
+
