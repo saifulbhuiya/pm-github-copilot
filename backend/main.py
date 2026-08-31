@@ -1,6 +1,8 @@
 import os
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -28,6 +30,14 @@ def health():
 @app.get("/api/hello")
 def hello():
     return {"message": "Hello from API"}
+
+
+# Serve static frontend files from Next.js export output
+static_dir = Path(__file__).parent.parent / "frontend" / "out"
+if static_dir.exists():
+    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="frontend")
+else:
+    print(f"WARNING: Static files directory not found at {static_dir}")
 
 
 if __name__ == "__main__":
